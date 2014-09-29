@@ -8,8 +8,8 @@ import java.util.Vector;
 
 
 public class FormCalc extends JFrame {      // Наследуя от JFrame мы получаем всю функциональность окна
-    JCheckBox cbRub = new JCheckBox();      // Чекбокс рубли
-    JCheckBox cbDol = new JCheckBox();      // Чекбокс долары
+    JRadioButton rbRub = new JRadioButton();// Радиокнопка рубли
+    JRadioButton rbDol = new JRadioButton();// Радиокнопка доллары
     JTextField tSum = new JTextField(10);   // Текстовое поле для ввода суммы
     JButton butCalc = new JButton("Рассчитать");    // Кнопка "Рассчитать"
     JTextArea tOutput = new JTextArea(20, 5);       // Текстовое поле для вывода расчетов
@@ -40,12 +40,18 @@ public class FormCalc extends JFrame {      // Наследуя от JFrame мы
         JPanel panelCheck = new JPanel();               // Панель для 2-ух чекбоксов
         // Последовательное размещение компонентов в панеле
         panelCheck.setLayout(new FlowLayout(SwingConstants.EAST));
-        cbRub.setText("Рубли");                         // Устаналиваем текст
-        cbRub.setSelected(true);                        // Отмечаем checkBox
-        cbDol.setText("Долары");                        // Устаналиваем текст
+        rbRub.setText("Рубли");                         // Устаналиваем текст
+        rbRub.setSelected(true);                        // Отмечаем checkBox
+        rbRub.setName("Rub");                           // Имя кнопки
+        rbDol.setText("Долары");                        // Устаналиваем текст
+        rbDol.setName("Dol");                           // Имя кнопки
+        // Настриваем слушателя на радиокнопки
+        ActionListener aListenerRB = new RadioButtonActionListener();
+        rbRub.addActionListener(aListenerRB);           // Для радиокнопки "Рубли"
+        rbDol.addActionListener(aListenerRB);           // Для радиокнопки "Доллары"
         panelCheck.add(new JLabel("Выбор валюты: "));   // Добавляем лайбл в панель
-        panelCheck.add(cbRub);                          // Добавляем чекБокс рубли
-        panelCheck.add(cbDol);                          // Добавляем чекБокс долары
+        panelCheck.add(rbRub);                          // Добавляем чекБокс рубли
+        panelCheck.add(rbDol);                          // Добавляем чекБокс долары
         panelCheck.setAlignmentX(LEFT_ALIGNMENT);       // По левому краю
 
         JPanel panelSum = new JPanel();                 // Панель для комп. лайбл и тек. пол.
@@ -134,7 +140,7 @@ public class FormCalc extends JFrame {      // Наследуя от JFrame мы
 
 
         // Если выбраны рубли
-        if(cbRub.isSelected()){
+        if(rbRub.isSelected()){
             // Выводим информацию расчетов по рублям для возможных тарифов
             tOutput.append("=======> Рубли <=======\n");
             tOutput.append("Тариф «Победа»  - ставка 8,5% годовых\n");
@@ -155,9 +161,9 @@ public class FormCalc extends JFrame {      // Наследуя от JFrame мы
                     String.format("%.3f", CalculateDeposit(sum, 11, countDay)) + " руб\n");
         }
         // Если выбраны доллары
-        if(cbDol.isSelected()){
+        else if(rbDol.isSelected()){
             // Выводим информацию расчетов для долларов для возможных тарифов
-            tOutput.append("\n=======> Доллары <=======\n");
+            tOutput.append("=======> Доллары <=======\n");
             tOutput.append("Тариф «Рантье»  - ставка 2% годовых\n");
             tOutput.append("      Начальная сумма - " + String.format("%.3f", sum) + " $\n");
             tOutput.append("      Итоговая сумма  - " +
@@ -191,6 +197,22 @@ public class FormCalc extends JFrame {      // Наследуя от JFrame мы
                     // Выводим сообщение об ошибке в случае неверного ввода
                     JOptionPane.showMessageDialog(null, "Введите число\n" + exp.getMessage());
                 }
+            }
+        }
+    }
+
+    /**
+     * Обработчик собтия нажатия на радиокнопки "Рубли/Доллары"
+     */
+    public class RadioButtonActionListener implements ActionListener{
+        public void actionPerformed(ActionEvent e){
+            if(e.getSource() == rbRub){
+                rbDol.setSelected(false);
+                rbRub.setSelected(true);
+            }
+            else if(e.getSource() == rbDol){
+                rbRub.setSelected(false);
+                rbDol.setSelected(true);
             }
         }
     }
